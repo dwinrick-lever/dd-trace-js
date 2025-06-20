@@ -86,11 +86,11 @@ const DsmPathwayCodec = {
     }
     carrier[CONTEXT_PROPAGATION_KEY_BASE64] = encodePathwayContextBase64(dataStreamsContext)
 
-    log.debug(() => `Injected into DSM carrier: ${JSON.stringify(pick(carrier, logKeys))}.`)
+    log.info(() => `Injected into DSM carrier: ${JSON.stringify(pick(carrier, logKeys))}.`)
   },
 
   decode (carrier) {
-    log.debug(() => `Attempting extract from DSM carrier: ${JSON.stringify(pick(carrier, logKeys))}.`)
+    log.info(() => `Attempting extract from DSM carrier: ${JSON.stringify(pick(carrier, logKeys))}.`)
 
     if (carrier == null) return
 

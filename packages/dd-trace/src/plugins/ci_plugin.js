@@ -442,7 +442,7 @@ module.exports = class CiPlugin extends Plugin {
     if (this.fileLineToProbeId.size === 0) {
       return Promise.resolve()
     }
-    log.debug('Removing all Dynamic Instrumentation probes')
+    log.info('Removing all Dynamic Instrumentation probes')
     const promises = []
     for (const fileLine of this.fileLineToProbeId.keys()) {
       const [file, line] = fileLine.split(':')
@@ -469,7 +469,7 @@ module.exports = class CiPlugin extends Plugin {
       log.warn('Could not add breakpoint for dynamic instrumentation')
       return
     }
-    log.debug('Adding breakpoint for Dynamic Instrumentation')
+    log.info('Adding breakpoint for Dynamic Instrumentation')
 
     this.testErrorStackIndex = stackIndex
     const activeProbeKey = `${file}:${line}`

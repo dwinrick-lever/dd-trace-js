@@ -81,10 +81,10 @@ const web = {
     context.config = config
 
     const filterResult = config.filter(req.url)
-    log.debug(`[WEB DEBUG] URL filter check: url=${req.url}, passed=${filterResult}`)
-    
+    log.info(`[WEB DEBUG] URL filter check: url=${req.url}, passed=${filterResult}`)
+
     if (!filterResult) {
-      log.debug(`[WEB DEBUG] Setting MANUAL_DROP=true for filtered URL: ${req.url}`)
+      log.info(`[WEB DEBUG] Setting MANUAL_DROP=true for filtered URL: ${req.url}`)
       span.setTag(MANUAL_DROP, true)
       span.context()._trace.isRecording = false
     }
@@ -507,7 +507,7 @@ function addResourceTag (context) {
     .filter(Boolean)
     .join(' ')
 
-  log.debug(`[WEB DEBUG] Setting resource tag: ${resource} for URL: ${req.url}`)
+  log.info(`[WEB DEBUG] Setting resource tag: ${resource} for URL: ${req.url}`)
   span.setTag(RESOURCE_NAME, resource)
 }
 

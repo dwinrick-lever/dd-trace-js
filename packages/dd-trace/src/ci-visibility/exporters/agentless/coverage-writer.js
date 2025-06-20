@@ -42,7 +42,7 @@ class Writer extends BaseWriter {
       options.headers['X-Datadog-EVP-Subdomain'] = 'citestcov-intake'
     }
 
-    log.debug(() => `Request to the intake: ${safeJSONStringify(options)}`)
+    log.info(() => `Request to the intake: ${safeJSONStringify(options)}`)
 
     const startRequestTime = Date.now()
 
@@ -68,7 +68,7 @@ class Writer extends BaseWriter {
         done()
         return
       }
-      log.debug(`Response from the intake: ${res}`)
+      log.info(`Response from the intake: ${res}`)
       done()
     })
   }

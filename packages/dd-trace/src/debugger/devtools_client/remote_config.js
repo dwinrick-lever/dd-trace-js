@@ -44,7 +44,7 @@ rcPort.on('message', async ({ action, conf: probe, ackId }) => {
 rcPort.on('messageerror', (err) => log.error('[debugger:devtools_client] received "messageerror" on RC port', err))
 
 async function processMsg (action, probe) {
-  log.debug(
+  log.info(
     '[debugger:devtools_client] Received request to %s %s probe (id: %s, version: %d)',
     action, probe.type, probe.id, probe.version
   )

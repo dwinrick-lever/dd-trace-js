@@ -9,7 +9,7 @@ const MAX_SIZE = 64 * 1024 // 64kb
 
 class LogExporter {
   export (spans) {
-    log.debug(() => `Adding trace to queue: ${JSON.stringify(spans)}`)
+    log.info(() => `Adding trace to queue: ${JSON.stringify(spans)}`)
 
     let size = TRACE_FORMAT_OVERHEAD
     let queue = []
@@ -17,7 +17,7 @@ class LogExporter {
     for (const span of spans) {
       const spanStr = JSON.stringify(span)
       if (spanStr.length + TRACE_FORMAT_OVERHEAD > MAX_SIZE) {
-        log.debug('Span too large to send to logs, dropping')
+        log.info('Span too large to send to logs, dropping')
         continue
       }
       if (spanStr.length + size > MAX_SIZE) {

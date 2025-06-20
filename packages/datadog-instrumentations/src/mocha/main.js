@@ -220,7 +220,7 @@ function getExecutionConfiguration (runner, isParallel, frameworkVersion, onFini
 
     isSuitesSkipped = suitesToRun.length !== runner.suite.suites.length
 
-    log.debug(
+    log.info(
       () => `${suitesToRun.length} out of ${runner.suite.suites.length} suites are going to run.`
     )
 

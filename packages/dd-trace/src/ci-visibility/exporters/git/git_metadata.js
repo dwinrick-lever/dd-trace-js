@@ -105,9 +105,9 @@ function getCommitsToUpload ({ url, repositoryUrl, latestCommits, isEvpProxy, ev
       incrementCountMetric(TELEMETRY_GIT_REQUESTS_SEARCH_COMMITS_ERRORS, { errorType: 'network' })
       return callback(new Error(`Can't parse commits to exclude response: ${e.message}`))
     }
-    log.debug(`There are ${alreadySeenCommits.length} commits to exclude.`)
+    log.info(`There are ${alreadySeenCommits.length} commits to exclude.`)
     const commitsToInclude = latestCommits.filter((commit) => !alreadySeenCommits.includes(commit))
-    log.debug(`There are ${commitsToInclude.length} commits to include.`)
+    log.info(`There are ${commitsToInclude.length} commits to include.`)
 
     if (!commitsToInclude.length) {
       return callback(null, [])
@@ -195,11 +195,11 @@ function generateAndUploadPackFiles ({
   repositoryUrl,
   headCommit
 }, callback) {
-  log.debug(`There are ${commitsToUpload.length} commits to upload`)
+  log.info(`There are ${commitsToUpload.length} commits to upload`)
 
   const packFilesToUpload = generatePackFilesForCommits(commitsToUpload)
 
-  log.debug(`Uploading ${packFilesToUpload.length} packfiles.`)
+  log.info(`Uploading ${packFilesToUpload.length} packfiles.`)
 
   if (!packFilesToUpload.length) {
     return callback(new Error('Failed to generate packfiles'))
@@ -253,14 +253,14 @@ function sendGitMetadata (url, { isEvpProxy, evpProxyPrefix }, configRepositoryU
     repositoryUrl = getRepositoryUrl()
   }
 
-  log.debug(`Uploading git history for repository ${repositoryUrl}`)
+  log.info(`Uploading git history for repository ${repositoryUrl}`)
 
   if (!repositoryUrl) {
     return callback(new Error('Repository URL is empty'))
   }
 
   let latestCommits = getLatestCommits()
-  log.debug(`There were ${latestCommits.length} commits since last month.`)
+  log.info(`There were ${latestCommits.length} commits since last month.`)
 
   const getOnFinishGetCommitsToUpload = (hasCheckedShallow) => (err, commitsToUpload) => {
     if (err) {
@@ -268,7 +268,7 @@ function sendGitMetadata (url, { isEvpProxy, evpProxyPrefix }, configRepositoryU
     }
 
     if (!commitsToUpload.length) {
-      log.debug('No commits to upload')
+      log.info('No commits to upload')
       return callback(null)
     }
 
@@ -285,7 +285,7 @@ function sendGitMetadata (url, { isEvpProxy, evpProxyPrefix }, configRepositoryU
       }, callback)
     }
     // Otherwise we unshallow and get commits to upload again
-    log.debug('It is shallow clone, unshallowing...')
+    log.info('It is shallow clone, unshallowing...')
     if (!isFalse(getEnvironmentVariable('DD_CIVISIBILITY_GIT_UNSHALLOW_ENABLED'))) {
       unshallowRepository()
     }

@@ -16,7 +16,7 @@ class DSMTextMapPropagator {
 
     this._injectDatadogDSMContext(ctx, carrier)
 
-    log.debug(() => `Inject into carrier (DSM): ${JSON.stringify(pick(carrier, logKeys))}.`)
+    log.info(() => `Inject into carrier (DSM): ${JSON.stringify(pick(carrier, logKeys))}.`)
   }
 
   extract (carrier) {
@@ -26,7 +26,7 @@ class DSMTextMapPropagator {
 
     if (!dsmContext) return dsmContext
 
-    log.debug(() => `Extract from carrier (DSM): ${JSON.stringify(pick(carrier, logKeys))}.`)
+    log.info(() => `Extract from carrier (DSM): ${JSON.stringify(pick(carrier, logKeys))}.`)
     return dsmContext
   }
 

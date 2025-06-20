@@ -39,7 +39,7 @@ class S3 extends BaseAwsSdkPlugin {
       response?.data?.CopyObjectResult?.ETag // v2 CopyObject
 
     if (!bucketName || !objectKey || !eTag) {
-      log.debug('Unable to calculate span pointer hash because of missing parameters.')
+      log.info('Unable to calculate span pointer hash because of missing parameters.')
       return
     }
 

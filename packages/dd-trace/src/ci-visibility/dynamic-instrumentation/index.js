@@ -60,7 +60,7 @@ class TestVisDynamicInstrumentation {
   start () {
     if (this.worker) return
 
-    log.debug('Starting Test Visibility - Dynamic Instrumentation client...')
+    log.info('Starting Test Visibility - Dynamic Instrumentation client...')
 
     const rcChannel = new MessageChannel() // mock channel
     const configChannel = new MessageChannel() // mock channel
@@ -100,7 +100,7 @@ class TestVisDynamicInstrumentation {
       }
     )
     this.worker.on('online', () => {
-      log.debug('Test Visibility - Dynamic Instrumentation client is ready')
+      log.info('Test Visibility - Dynamic Instrumentation client is ready')
       this._onReady()
     })
 

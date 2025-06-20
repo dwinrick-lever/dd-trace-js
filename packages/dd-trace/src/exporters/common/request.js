@@ -120,7 +120,7 @@ function request (data, options, callback) {
 
   const makeRequest = onError => {
     if (!request.writable) {
-      log.debug('Maximum number of active requests reached: payload is discarded.')
+      log.info('Maximum number of active requests reached: payload is discarded.')
       return callback(null)
     }
 

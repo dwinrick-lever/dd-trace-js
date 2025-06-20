@@ -45,7 +45,7 @@ function checkTimeout (context) {
 function crashFlush () {
   const activeSpan = tracer.scope().active()
   if (activeSpan === null) {
-    log.debug('An impending timeout was reached, but no root span was found. No error will be tagged.')
+    log.info('An impending timeout was reached, but no root span was found. No error will be tagged.')
   } else {
     const error = new ImpendingTimeout('Datadog detected an impending timeout')
     activeSpan.addTags({
