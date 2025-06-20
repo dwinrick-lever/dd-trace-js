@@ -69,7 +69,7 @@ class LLMObsPlugin extends TracingPlugin {
     const apmStore = ctx.currentStore
     const span = apmStore?.span
     if (!span) {
-      log.debug(
+      log.info(
         `Tried to start an LLMObs span for ${this.constructor.name} without an active APM span.
         Not starting LLMObs span.`
       )

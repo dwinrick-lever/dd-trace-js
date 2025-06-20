@@ -204,7 +204,7 @@ class DataStreamsProcessor {
     let closestOppositeDirectionHash = ENTRY_PARENT_HASH
     let closestOppositeDirectionEdgeStart = nowNs
     if (ctx == null) {
-      log.debug(() => 'Setting DSM Checkpoint with empty parent context.')
+      log.info(() => 'Setting DSM Checkpoint with empty parent context.')
     } else {
       pathwayStartNs = ctx.pathwayStartNs
       edgeStartNs = ctx.edgeStartNs
@@ -226,7 +226,7 @@ class DataStreamsProcessor {
         closestOppositeDirectionHash = parentHash
         closestOppositeDirectionEdgeStart = edgeStartNs
       }
-      log.debug(
+      log.info(
         () => `Setting DSM Checkpoint from extracted parent context with hash: ${parentHash} and edge tags: ${edgeTags}`
       )
     }

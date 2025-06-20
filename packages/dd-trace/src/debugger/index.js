@@ -20,7 +20,7 @@ module.exports = {
 function start (config, rc) {
   if (worker !== null) return
 
-  log.debug('[debugger] Starting Dynamic Instrumentation client...')
+  log.info('[debugger] Starting Dynamic Instrumentation client...')
 
   const rcAckCallbacks = new Map()
   const rcChannel = new MessageChannel()
@@ -62,7 +62,7 @@ function start (config, rc) {
   )
 
   worker.on('online', () => {
-    log.debug('[debugger] Dynamic Instrumentation worker thread started successfully (thread id: %d)', worker.threadId)
+    log.info('[debugger] Dynamic Instrumentation worker thread started successfully (thread id: %d)', worker.threadId)
   })
 
   worker.on('error', (err) => log.error('[debugger] worker thread error', err))

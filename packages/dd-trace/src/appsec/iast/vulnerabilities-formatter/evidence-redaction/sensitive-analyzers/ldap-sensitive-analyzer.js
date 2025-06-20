@@ -22,7 +22,7 @@ module.exports = function extractSensitiveRanges (evidence) {
     }
     return tokens
   } catch (e) {
-    log.debug('[ASM] Error extracting sensitive ranges', e)
+    log.info('[ASM] Error extracting sensitive ranges', e)
   }
   return []
 }

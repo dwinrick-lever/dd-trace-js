@@ -20,7 +20,7 @@ function makeRequest (data, url, cb) {
     url
   }
 
-  log.debug(() => `Request to the intake: ${JSON.stringify(options)}`)
+  log.info(() => `Request to the intake: ${JSON.stringify(options)}`)
 
   request(data, options, (err, res) => {
     cb(err, res)
@@ -39,7 +39,7 @@ class DataStreamsWriter {
 
   flush (payload) {
     if (!request.writable) {
-      log.debug(() => `Maximum number of active requests reached. Payload discarded: ${JSON.stringify(payload)}`)
+      log.info(() => `Maximum number of active requests reached. Payload discarded: ${JSON.stringify(payload)}`)
       return
     }
     const encodedPayload = msgpack.encode(payload)
@@ -50,7 +50,7 @@ class DataStreamsWriter {
         return
       }
       makeRequest(compressedData, this._url, (err, res) => {
-        log.debug(`Response from the agent: ${res}`)
+        log.info(`Response from the agent: ${res}`)
         if (err) {
           log.error('Error sending datastream', err)
         }

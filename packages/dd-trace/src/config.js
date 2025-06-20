@@ -956,10 +956,17 @@ class Config {
       safeJsonParse(maybeFile(DD_SPAN_SAMPLING_RULES_FILE)),
       safeJsonParse(DD_SPAN_SAMPLING_RULES)
     )))
-    this._setUnit(env, 'sampleRate', DD_TRACE_SAMPLE_RATE ||
-    getFromOtelSamplerMap(OTEL_TRACES_SAMPLER, OTEL_TRACES_SAMPLER_ARG))
-    this._setValue(env, 'sampler.rateLimit', DD_TRACE_RATE_LIMIT)
-    this._setSamplingRule(env, 'sampler.rules', safeJsonParse(DD_TRACE_SAMPLING_RULES))
+    const sampleRateValue = DD_TRACE_SAMPLE_RATE || getFromOtelSamplerMap(OTEL_TRACES_SAMPLER, OTEL_TRACES_SAMPLER_ARG)
+    log.info(`[CONFIG DEBUG] Sample rate from env: DD_TRACE_SAMPLE_RATE=${DD_TRACE_SAMPLE_RATE}, OTEL=${OTEL_TRACES_SAMPLER}/${OTEL_TRACES_SAMPLER_ARG}, final=${sampleRateValue}`)
+    this._setUnit(env, 'sampleRate', sampleRateValue)
+
+    const rateLimitValue = DD_TRACE_RATE_LIMIT
+    log.info(`[CONFIG DEBUG] Rate limit from env: DD_TRACE_RATE_LIMIT=${rateLimitValue}`)
+    this._setValue(env, 'sampler.rateLimit', rateLimitValue)
+
+    const samplingRulesValue = safeJsonParse(DD_TRACE_SAMPLING_RULES)
+    log.info(`[CONFIG DEBUG] Sampling rules from env: DD_TRACE_SAMPLING_RULES=${DD_TRACE_SAMPLING_RULES}, parsed=${JSON.stringify(samplingRulesValue)}`)
+    this._setSamplingRule(env, 'sampler.rules', samplingRulesValue)
     this._envUnprocessed['sampler.rules'] = DD_TRACE_SAMPLING_RULES
     this._setString(env, 'scope', DD_TRACE_SCOPE)
     this._setString(env, 'service', DD_SERVICE || tags.service || OTEL_SERVICE_NAME)

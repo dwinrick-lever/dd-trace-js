@@ -20,7 +20,7 @@ class Writer extends BaseWriter {
         done()
         return
       }
-      log.debug(`Response from the intake: ${res}`)
+      log.info(`Response from the intake: ${res}`)
       done()
     })
   }
@@ -41,7 +41,7 @@ function makeRequest (data, url, cb) {
   options.hostname = url.hostname
   options.port = url.port
 
-  log.debug(() => `Request to the intake: ${JSON.stringify(options)}`)
+  log.info(() => `Request to the intake: ${JSON.stringify(options)}`)
 
   request(data, options, (err, res) => {
     cb(err, res)

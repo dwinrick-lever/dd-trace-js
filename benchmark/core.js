@@ -165,7 +165,7 @@ suite
     },
 
     fn () {
-      log.debug('hello')
+      log.info('hello')
     }
   })
   .add('log (error)', {
@@ -199,7 +199,7 @@ suite
     },
 
     fn () {
-      log.debug(() => (new Error('boom')).message)
+      log.info(() => (new Error('boom')).message)
     }
   })
 

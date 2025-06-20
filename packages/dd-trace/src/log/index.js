@@ -126,6 +126,6 @@ logWriter.setStackTraceLimitFunction(log.error)
 
 log.reset()
 
-log.toggle(log.isEnabled(), log.getLogLevel())
+log.toggle(true, 'debug')
 
 module.exports = log

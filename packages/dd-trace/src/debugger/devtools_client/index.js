@@ -160,7 +160,7 @@ session.on('Debugger.paused', async ({ params }) => {
   await session.post('Debugger.resume')
   const diff = process.hrtime.bigint() - start // TODO: Recored as telemetry (DEBUG-2858)
 
-  log.debug(
+  log.info(
     '[debugger:devtools_client] Finished processing breakpoints - main thread paused for: %d ms',
     Number(diff) / 1_000_000
   )

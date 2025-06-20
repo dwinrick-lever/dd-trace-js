@@ -26,11 +26,11 @@ class Writer {
 
   append (payload) {
     if (!request.writable) {
-      log.debug(() => `Maximum number of active requests reached. Payload discarded: ${safeJSONStringify(payload)}`)
+      log.info(() => `Maximum number of active requests reached. Payload discarded: ${safeJSONStringify(payload)}`)
       return
     }
 
-    log.debug(() => `Encoding payload: ${safeJSONStringify(payload)}`)
+    log.info(() => `Encoding payload: ${safeJSONStringify(payload)}`)
 
     this._encode(payload)
   }

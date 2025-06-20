@@ -69,7 +69,7 @@ class TextMapPropagator {
       injectCh.publish({ spanContext, carrier })
     }
 
-    log.debug(() => `Inject into carrier: ${JSON.stringify(pick(carrier, logKeys))}.`)
+    log.info(() => `Inject into carrier: ${JSON.stringify(pick(carrier, logKeys))}.`)
   }
 
   extract (carrier) {
@@ -81,7 +81,7 @@ class TextMapPropagator {
       extractCh.publish({ spanContext, carrier })
     }
 
-    log.debug(() => {
+    log.info(() => {
       const keys = JSON.stringify(pick(carrier, logKeys))
       const styles = this._config.tracePropagationStyle.extract.join(', ')
 
@@ -155,7 +155,7 @@ class TextMapPropagator {
     const trace = spanContext._trace
 
     if (this._config.tagsHeaderMaxLength === 0) {
-      log.debug('Trace tag propagation is disabled, skipping injection.')
+      log.info('Trace tag propagation is disabled, skipping injection.')
       return
     }
 
@@ -666,7 +666,7 @@ class TextMapPropagator {
     const trace = spanContext._trace
 
     if (this._config.tagsHeaderMaxLength === 0) {
-      log.debug('Trace tag propagation is disabled, skipping extraction.')
+      log.info('Trace tag propagation is disabled, skipping extraction.')
     } else if (carrier[tagsKey].length > this._config.tagsHeaderMaxLength) {
       log.error('Trace tags from carrier are too large, skipping extraction.')
     } else {

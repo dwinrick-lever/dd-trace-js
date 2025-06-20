@@ -26,7 +26,7 @@ const scriptLoadingStabilized = new Promise((resolve) => { scriptLoadingStabiliz
 // Therefore, once new scripts has been loaded, all probes are re-evaluated. If the matched `scriptId` has changed, we
 // simply remove the old probe (if it was added to the wrong script) and apply it again.
 session.on('scriptLoadingStabilized', () => {
-  log.debug('[debugger:devtools_client] Re-evaluating probes')
+  log.info('[debugger:devtools_client] Re-evaluating probes')
   scriptLoadingStabilizedResolve()
   for (const probe of probes.values()) {
     reEvaluateProbe(probe).catch(err => {
@@ -77,7 +77,7 @@ async function addBreakpoint (probe) {
   probe.scriptId = scriptId // Needed for detecting script changes during re-evaluation
 
   if (sourceMapURL) {
-    log.debug(
+    log.info(
       '[debugger:devtools_client] Translating location using source map for %s:%d:%d (probe: %s, version: %d)',
       file, lineNumber, columnNumber, probe.id, probe.version
     );
@@ -93,7 +93,7 @@ async function addBreakpoint (probe) {
   const locationKey = generateLocationKey(scriptId, lineNumber, columnNumber)
   const breakpoint = locationToBreakpoint.get(locationKey)
 
-  log.debug(
+  log.info(
     '[debugger:devtools_client] %s breakpoint at %s:%d:%d (probe: %s, version: %d)',
     breakpoint ? 'Updating' : 'Adding', url, lineNumber, columnNumber, probe.id, probe.version
   )
@@ -200,10 +200,10 @@ async function updateBreakpointInternal (breakpoint, probe) {
 
 async function reEvaluateProbe (probe) {
   const script = findScriptFromPartialPath(probe.where.sourceFile)
-  log.debug('[debugger:devtools_client] re-evaluating probe %s: %s => %s', probe.id, probe.scriptId, script?.scriptId)
+  log.info('[debugger:devtools_client] re-evaluating probe %s: %s => %s', probe.id, probe.scriptId, script?.scriptId)
 
   if (probe.scriptId !== script?.scriptId) {
-    log.debug('[debugger:devtools_client] Better match found for probe %s, re-evaluating', probe.id)
+    log.info('[debugger:devtools_client] Better match found for probe %s, re-evaluating', probe.id)
     if (probeToLocation.has(probe.id)) {
       await removeBreakpoint(probe)
     }
@@ -213,20 +213,20 @@ async function reEvaluateProbe (probe) {
 
 async function start () {
   sessionStarted = true
-  log.debug('[debugger:devtools_client] Starting debugger')
+  log.info('[debugger:devtools_client] Starting debugger')
   await session.post('Debugger.enable')
 
   // Wait until there's a pause in script-loading to avoid accidentally adding probes to incorrect scripts. This is not
   // a guarantee, but best effort.
-  log.debug('[debugger:devtools_client] Waiting for script-loading to stabilize')
+  log.info('[debugger:devtools_client] Waiting for script-loading to stabilize')
   await scriptLoadingStabilized
-  log.debug('[debugger:devtools_client] Script loading stabilized')
+  log.info('[debugger:devtools_client] Script loading stabilized')
 }
 
 function stop () {
   sessionStarted = false
   clearState()
-  log.debug('[debugger:devtools_client] Stopping debugger')
+  log.info('[debugger:devtools_client] Stopping debugger')
   return session.post('Debugger.disable')
 }
 

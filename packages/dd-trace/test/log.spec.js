@@ -127,13 +127,13 @@ describe('log', () => {
 
     describe('debug', () => {
       it('should log to console by default', () => {
-        log.debug('debug')
+        log.info('debug')
 
         expect(console.debug).to.have.been.calledWith('debug')
       })
 
       it('should support callbacks that return a message', () => {
-        log.debug(() => 'debug')
+        log.info(() => 'debug')
 
         expect(console.debug).to.have.been.calledWith('debug')
       })
@@ -250,7 +250,7 @@ describe('log', () => {
     describe('toggle', () => {
       it('should disable the logger', () => {
         log.toggle(false)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.not.have.been.called
@@ -260,7 +260,7 @@ describe('log', () => {
       it('should enable the logger', () => {
         log.toggle(false)
         log.toggle(true)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -269,7 +269,7 @@ describe('log', () => {
 
       it('should set minimum log level when enabled with logLevel argument set to a valid string', () => {
         log.toggle(true, 'error')
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.not.have.been.called
@@ -278,7 +278,7 @@ describe('log', () => {
 
       it('should set default log level when enabled with logLevel argument set to an invalid string', () => {
         log.toggle(true, 'not a real log level')
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -287,7 +287,7 @@ describe('log', () => {
 
       it('should set min log level when enabled w/logLevel arg set to valid string w/wrong case or whitespace', () => {
         log.toggle(true, ' ErRoR   ')
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.not.have.been.called
@@ -296,7 +296,7 @@ describe('log', () => {
 
       it('should log all log levels greater than or equal to minimum log level', () => {
         log.toggle(true, 'debug')
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -305,7 +305,7 @@ describe('log', () => {
 
       it('should enable default log level when enabled with logLevel argument set to invalid input', () => {
         log.toggle(true, ['trace', 'info', 'eror'])
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -314,7 +314,7 @@ describe('log', () => {
 
       it('should enable default log level when enabled without logLevel argument', () => {
         log.toggle(true)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -325,7 +325,7 @@ describe('log', () => {
     describe('use', () => {
       it('should set the underlying logger when valid', () => {
         log.use(logger)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(logger.debug).to.have.been.calledWith('debug')
@@ -334,7 +334,7 @@ describe('log', () => {
 
       it('be a no op with an empty logger', () => {
         log.use(null)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -343,7 +343,7 @@ describe('log', () => {
 
       it('be a no op with an invalid logger', () => {
         log.use('invalid')
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -356,7 +356,7 @@ describe('log', () => {
         log.use(logger)
         log.reset()
         log.toggle(true)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')
@@ -366,7 +366,7 @@ describe('log', () => {
       it('should reset the toggle', () => {
         log.use(logger)
         log.reset()
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.not.have.been.called
@@ -378,7 +378,7 @@ describe('log', () => {
         log.toggle(true, 'error')
         log.reset()
         log.toggle(true)
-        log.debug('debug')
+        log.info('debug')
         log.error(error)
 
         expect(console.debug).to.have.been.calledWith('debug')

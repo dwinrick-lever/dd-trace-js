@@ -35,7 +35,7 @@ const STATUSES = {
 }
 
 function ackReceived ({ id: probeId, version }) {
-  log.debug('[debugger:devtools_client] Queueing RECEIVED status for probe %s (version: %d)', probeId, version)
+  log.info('[debugger:devtools_client] Queueing RECEIVED status for probe %s (version: %d)', probeId, version)
 
   onlyUniqueUpdates(
     STATUSES.RECEIVED, probeId, version,
@@ -44,7 +44,7 @@ function ackReceived ({ id: probeId, version }) {
 }
 
 function ackInstalled ({ id: probeId, version }) {
-  log.debug('[debugger:devtools_client] Queueing INSTALLED status for probe %s (version: %d)', probeId, version)
+  log.info('[debugger:devtools_client] Queueing INSTALLED status for probe %s (version: %d)', probeId, version)
 
   onlyUniqueUpdates(
     STATUSES.INSTALLED, probeId, version,
@@ -53,7 +53,7 @@ function ackInstalled ({ id: probeId, version }) {
 }
 
 function ackEmitting ({ id: probeId, version }) {
-  log.debug('[debugger:devtools_client] Queueing EMITTING status for probe %s (version: %d)', probeId, version)
+  log.info('[debugger:devtools_client] Queueing EMITTING status for probe %s (version: %d)', probeId, version)
 
   onlyUniqueUpdates(
     STATUSES.EMITTING, probeId, version,
@@ -82,7 +82,7 @@ function send (payload) {
 }
 
 function onFlush (payload) {
-  log.debug('[debugger:devtools_client] Flushing diagnostics payload buffer')
+  log.info('[debugger:devtools_client] Flushing diagnostics payload buffer')
 
   const form = new FormData()
 

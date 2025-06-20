@@ -29,7 +29,7 @@ const options = {
 let shouldInit = !isFalse(getEnvironmentVariable('DD_CIVISIBILITY_ENABLED'))
 
 if (isPackageManager()) {
-  log.debug('dd-trace is not initialized in a package manager.')
+  log.info('dd-trace is not initialized in a package manager.')
   shouldInit = false
 }
 

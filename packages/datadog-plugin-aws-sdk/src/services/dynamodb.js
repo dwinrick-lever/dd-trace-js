@@ -153,7 +153,7 @@ class DynamoDb extends BaseAwsSdkPlugin {
    */
   static calculatePutItemHash (tableName, item, primaryKeyConfig) {
     if (!tableName || !item) {
-      log.debug('Unable to calculate hash because missing required parameters')
+      log.info('Unable to calculate hash because missing required parameters')
       return
     }
     const keyNames = primaryKeyConfig?.[tableName]
@@ -178,7 +178,7 @@ class DynamoDb extends BaseAwsSdkPlugin {
    */
   static calculateHashWithKnownKeys (tableName, keysObject) {
     if (!tableName || !keysObject) {
-      log.debug('Unable to calculate hash because missing parameters')
+      log.info('Unable to calculate hash because missing parameters')
       return
     }
     const keyNames = Object.keys(keysObject)

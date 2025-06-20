@@ -47,7 +47,7 @@ class Writer extends BaseWriter {
         return
       }
 
-      log.debug('Response from the agent: %s', res)
+      log.info('Response from the agent: %s', res)
 
       try {
         this._prioritySampler.update(JSON.parse(res).rate_by_service)
@@ -92,7 +92,7 @@ function makeRequest (version, data, count, url, headers, lookup, needsStartupLo
   setHeader(options.headers, 'Datadog-Meta-Lang-Version', process.version)
   setHeader(options.headers, 'Datadog-Meta-Lang-Interpreter', process.jsEngine || 'v8')
 
-  log.debug(() => `Request to the agent: ${JSON.stringify(options)}`)
+  log.info(() => `Request to the agent: ${JSON.stringify(options)}`)
 
   request(data, options, (err, res, status) => {
     if (needsStartupLog) {

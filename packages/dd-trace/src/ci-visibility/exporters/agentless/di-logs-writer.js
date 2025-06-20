@@ -37,7 +37,7 @@ class DynamicInstrumentationLogsWriter extends BaseWriter {
       options.path = '/debugger/v1/input'
     }
 
-    log.debug(() => `Request to the logs intake: ${safeJSONStringify(options)}`)
+    log.info(() => `Request to the logs intake: ${safeJSONStringify(options)}`)
 
     request(data, options, (err, res) => {
       if (err) {
@@ -45,7 +45,7 @@ class DynamicInstrumentationLogsWriter extends BaseWriter {
         done()
         return
       }
-      log.debug(`Response from the logs intake: ${res}`)
+      log.info(`Response from the logs intake: ${res}`)
       done()
     })
   }
