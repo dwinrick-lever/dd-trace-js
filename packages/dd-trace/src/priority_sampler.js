@@ -74,9 +74,22 @@ class PrioritySampler {
    */
   configure (env, opts = {}) {
     const { sampleRate, provenance, rateLimit = 100, rules } = opts
+    
+    log.debug(`[PRIORITY SAMPLER CONFIG] Environment: ${env}`)
+    log.debug(`[PRIORITY SAMPLER CONFIG] Sample rate: ${sampleRate}`)
+    log.debug(`[PRIORITY SAMPLER CONFIG] Rate limit: ${rateLimit}`)
+    log.debug(`[PRIORITY SAMPLER CONFIG] Rules count: ${(rules || []).length}`)
+    log.debug(`[PRIORITY SAMPLER CONFIG] Rules: ${JSON.stringify(rules)}`)
+    log.debug(`[PRIORITY SAMPLER CONFIG] Provenance: ${provenance}`)
+    
     this._env = env
     this._rules = this.#normalizeRules(rules || [], sampleRate, rateLimit, provenance)
     this._limiter = new RateLimiter(rateLimit)
+    
+    log.debug(`[PRIORITY SAMPLER CONFIG] Final rules count after normalization: ${this._rules.length}`)
+    this._rules.forEach((rule, i) => {
+      log.debug(`[PRIORITY SAMPLER CONFIG] Rule ${i}: sampleRate=${rule.sampleRate}, matchers=${rule.matchers.length}`)
+    })
 
     log.trace(env, opts)
     setSamplingRules(this._rules)
@@ -109,14 +122,22 @@ class PrioritySampler {
     if (!root) return // noop span
 
     log.trace(span, auto)
+    
+    // DEBUG: Log span details for sampling investigation
+    const spanResource = context._tags.resource || context._tags['resource.name']
+    const spanName = context._name
+    log.debug(`[SAMPLING DEBUG ${spanResource}] Processing span: name=${spanName}, resource=${spanResource}, service=${context._tags['service.name']}`)
 
     const tag = this._getPriorityFromTags(context._tags, context)
+    log.debug(`[SAMPLING DEBUG ${spanResource}] Manual priority from tags: ${tag}, hasManualDrop: ${Object.hasOwn(context._tags, MANUAL_DROP)}, manualDropValue: ${context._tags[MANUAL_DROP]}`)
 
     if (this.validate(tag)) {
       context._sampling.priority = tag
       context._sampling.mechanism = SAMPLING_MECHANISM_MANUAL
+      log.debug(`[SAMPLING DEBUG ${spanResource}] Set manual priority: ${tag}, mechanism: ${SAMPLING_MECHANISM_MANUAL}`)
     } else if (auto) {
       context._sampling.priority = this._getPriorityFromAuto(root)
+      log.debug(`[SAMPLING DEBUG ${spanResource}] Set auto priority: ${context._sampling.priority}, mechanism: ${context._sampling.mechanism}`)
     } else {
       return
     }
@@ -205,6 +226,12 @@ class PrioritySampler {
   _getPriorityFromAuto (span) {
     const context = this._getContext(span)
     const rule = this.#findRule(span)
+    
+    const spanResource = context._tags.resource || context._tags['resource.name']
+    log.debug(`[SAMPLING DEBUG ${spanResource}] Finding rule for span. Found rule: ${rule ? 'YES' : 'NO'}`)
+    if (rule) {
+      log.debug(`[SAMPLING DEBUG ${spanResource}] Rule details: sampleRate=${rule.sampleRate}, service=${rule.matchers.length > 0 ? 'with matchers' : 'no matchers'}`)
+    }
 
     return rule
       ? this.#getPriorityByRule(context, rule)
@@ -245,7 +272,14 @@ class PrioritySampler {
     if (rule.provenance === 'customer') context._sampling.mechanism = SAMPLING_MECHANISM_REMOTE_USER
     if (rule.provenance === 'dynamic') context._sampling.mechanism = SAMPLING_MECHANISM_REMOTE_DYNAMIC
 
-    return rule.sample(context) && this._isSampledByRateLimit(context)
+    const ruleSampleResult = rule.sample(context)
+    const rateLimitResult = this._isSampledByRateLimit(context)
+    const finalResult = ruleSampleResult && rateLimitResult
+    
+    const spanResource = context._tags.resource || context._tags['resource.name']
+    log.debug(`[SAMPLING DEBUG ${spanResource}] Rule sampling: sampleRate=${rule.sampleRate}, ruleSample=${ruleSampleResult}, rateLimit=${rateLimitResult}, final=${finalResult}`)
+
+    return finalResult
       ? USER_KEEP
       : USER_REJECT
   }
@@ -308,19 +342,29 @@ class PrioritySampler {
    * @returns {SamplingRule[]}
    */
   #normalizeRules (rules, sampleRate, rateLimit, provenance) {
+    log.debug(`[NORMALIZE RULES] Input: rules=${JSON.stringify(rules)}, sampleRate=${sampleRate}, rateLimit=${rateLimit}, provenance=${provenance}`)
+    
     rules = Array.isArray(rules) ? rules.flat() : [rules]
+    log.debug(`[NORMALIZE RULES] After array normalization: ${JSON.stringify(rules)}`)
 
     rules.push({ sampleRate, maxPerSecond: rateLimit, provenance })
+    log.debug(`[NORMALIZE RULES] After adding default rule: ${JSON.stringify(rules)}`)
 
     const result = []
     for (const rule of rules) {
-      const sampleRate = Number.parseFloat(rule.sampleRate)
+      const parsedSampleRate = Number.parseFloat(rule.sampleRate)
+      log.debug(`[NORMALIZE RULES] Processing rule: ${JSON.stringify(rule)}, parsedSampleRate=${parsedSampleRate}, isValid=${!Number.isNaN(parsedSampleRate)}`)
       // TODO(BridgeAR): Debug logging invalid rules fails our tests.
       // Should we definitely not know about these?
-      if (!Number.isNaN(sampleRate)) {
-        result.push(SamplingRule.from({ ...rule, sampleRate }))
+      if (!Number.isNaN(parsedSampleRate)) {
+        const normalizedRule = SamplingRule.from({ ...rule, sampleRate: parsedSampleRate })
+        log.debug(`[NORMALIZE RULES] Created rule with sampleRate=${normalizedRule.sampleRate}, matchers=${normalizedRule.matchers.length}`)
+        result.push(normalizedRule)
+      } else {
+        log.debug(`[NORMALIZE RULES] Skipped invalid rule: ${JSON.stringify(rule)}`)
       }
     }
+    log.debug(`[NORMALIZE RULES] Final result: ${result.length} rules`)
     return result
   }
 

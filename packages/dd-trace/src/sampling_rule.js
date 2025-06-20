@@ -3,6 +3,7 @@
 const { globMatch } = require('../src/util')
 const RateLimiter = require('./rate_limiter')
 const Sampler = require('./sampler')
+const log = require('./log')
 
 class AlwaysMatcher {
   match () {
@@ -111,15 +112,25 @@ class SamplingRule {
   }
 
   match (span) {
+    const context = span.context()
+    const spanResource = context._tags.resource || context._tags['resource.name']
+    const spanName = context._name
+    const spanService = context._tags.service || context._tags['service.name'] || span.tracer()._service
+    
+    log.debug(`[SAMPLING RULE DEBUG ${spanResource}] Checking rule match for span: name=${spanName}, resource=${spanResource}, service=${spanService}`)
+    
     for (const matcher of this.matchers) {
       // Rule is a special object with a .match() property.
       // It has nothing to do with a regular expression.
       // eslint-disable-next-line unicorn/prefer-regexp-test
-      if (!matcher.match(span)) {
+      const matchResult = matcher.match(span)
+      log.debug(`[SAMPLING RULE DEBUG ${spanResource}] Matcher result: ${matchResult}, pattern: ${matcher.pattern || 'always'}, locator: ${matcher.locator ? matcher.locator.name : 'unknown'}`)
+      if (!matchResult) {
         return false
       }
     }
-
+    
+    log.debug(`[SAMPLING RULE DEBUG ${spanResource}] Rule matched! sampleRate=${this.sampleRate}`)
     return true
   }
 
@@ -130,12 +141,19 @@ class SamplingRule {
    * @returns {boolean} `true` if the span should be sampled, otherwise `false`.
    */
   sample (span) {
-    if (!this._sampler.isSampled(span)) {
+    const samplerResult = this._sampler.isSampled(span)
+    // span is actually a SpanContext, not a Span object
+    const spanResource = span._tags.resource || span._tags['resource.name']
+    log.debug(`[SAMPLING RULE DEBUG ${spanResource}] Sampler result: ${samplerResult}, rate: ${this._sampler.rate()}`)
+    
+    if (!samplerResult) {
       return false
     }
 
     if (this._limiter) {
-      return this._limiter.isAllowed()
+      const limiterResult = this._limiter.isAllowed()
+      log.debug(`[SAMPLING RULE DEBUG ${spanResource}] Rate limiter result: ${limiterResult}, effectiveRate: ${this._limiter.effectiveRate()}`)
+      return limiterResult
     }
 
     return true
